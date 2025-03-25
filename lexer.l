@@ -11,6 +11,7 @@
 "falls"         { return IF; }
 "zurückgeben"   { return RETURN; }
 "ganzzahl"      { return INT; }
+"sonst"         { return ELSE; }
 
 
 [0-9]+          { yylval.ival = atoi(yytext); return NUMBER; }
