@@ -1,36 +1,75 @@
-%define api.pure full
-%define api.header.include {"parser.h"}
 %define parse.error verbose
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
 void yyerror(const char *s);
 int yylex();
+
+typedef struct {
+    char* sval;
+    int ival;
+} YYSTYPE;
+
+#define YYSTYPE_IS_DECLARED 1
 %}
 
-%token NUMBER IDENTIFIER EQUALS SEMICOLON
+%union {
+    char* sval;
+    int ival;
+}
+
+%token <sval> IDENTIFIER
+%token <ival> NUMBER
+%token IF RETURN INT
+
+%type <sval> condition
 
 %%
 
 program:
-    statement_list
+    statements
     ;
 
-statement_list:
-    statement_list statement
-    | statement
+statements:
+    statement
+    | statements statement
     ;
 
 statement:
-    IDENTIFIER EQUALS NUMBER SEMICOLON { printf("Variable '%s' zugewiesen mit %d\n", $1, $3); }
+    if_statement
+    | return_statement
+    | int_definition
+    ;
+
+if_statement:
+    IF '(' condition ')' '{' statements '}'  { printf("if (%s) {\n", $3); free($3); }
+    ;
+
+return_statement:
+    RETURN NUMBER ';' { printf("return %d;\n", $2 == 1 ? 0 : $2); }
+    ;
+
+int_definition:
+    INT IDENTIFIER '=' NUMBER ';' { printf("int %s = %d;\n", $2, $4); free($2); }
+    | INT IDENTIFIER ';' { printf("int %s;\n", $2); free($2); }
+    ;
+
+condition:
+    IDENTIFIER  { $$ = strdup($1); free($1); }
+    | NUMBER    {
+        $$ = malloc(16);
+        sprintf($$, "%d", $1);
+    }
     ;
 
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Fehler: %s\n", s);
+    fprintf(stderr, "Error: %s\n", s);
 }
 
-int test() {
+int parser_main() {
     return yyparse();
 }

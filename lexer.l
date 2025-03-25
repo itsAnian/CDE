@@ -1,16 +1,26 @@
+%option noyywrap
+
 %{
-#include "parser.h" // Enthält Token-Definitionen von Bison
+#include "parser.h"
+#include <stdlib.h>
+#include <string.h>
 %}
 
 %%
 
-[0-9]+   { return NUMBER; }   // Zahlen erkennen
-"="      { return EQUALS; }   // Zuweisungssymbol
-";"      { return SEMICOLON; }   // Semikolon
-[a-zA-Z_][a-zA-Z0-9_]* { return IDENTIFIER; }  // Variablen
-[ \t\n]  ;  // Leerzeichen ignorieren
-.        { return yytext[0]; } // Andere Zeichen zurückgeben
+"falls"         { return IF; }
+"zurückgeben"   { return RETURN; }
+"ganzzahl"      { return INT; }
+
+[0-9]+          { yylval.ival = atoi(yytext); return NUMBER; }
+[a-zA-Z_][a-zA-Z0-9_]* { yylval.sval = strdup(yytext); return IDENTIFIER; }
+"("             { return '('; }
+")"             { return ')'; }
+"{"             { return '{'; }
+"}"             { return '}'; }
+";"             { return ';'; }
+"="             { return '='; }
+[ \t\r\n]+      { /* Ignore whitespace */ }
+.               { printf("Unexpected character: %c\n", *yytext); }
 
 %%
-
-int yywrap() { return 1; }  // Beendet den Lexer
