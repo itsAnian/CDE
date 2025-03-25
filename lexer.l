@@ -1,16 +1,18 @@
-%{
-#include "parser.tab.h"  // Von Bison generierte Header-Datei
-%}
+%option noyywrap
 
-%option noyywrap  // Verhindert Probleme mit der Eingabe
+%{
+#include "parser.h"
+#include <stdlib.h>
+#include <string.h>
+%}
 
 %%
 
-// Deutsche Schlüsselwörter als Token definieren
 "falls"         { return IF; }
 "zurückgeben"   { return RETURN; }
+"ganzzahl"      { return INT; }
 
-// Standard C-Symbole und Bezeichner
+
 [0-9]+          { yylval.ival = atoi(yytext); return NUMBER; }
 [a-zA-Z_][a-zA-Z0-9_]* { yylval.sval = strdup(yytext); return IDENTIFIER; }
 "("             { return '('; }
@@ -18,7 +20,9 @@
 "{"             { return '{'; }
 "}"             { return '}'; }
 ";"             { return ';'; }
-[ \t\r\n]+      { /* Ignoriere Leerzeichen */ }
-.               { printf("Unerwartetes Zeichen: %c\n", *yytext); }
+
+"="             { return '='; }
+[ \t\r\n]+      { /* Ignore whitespace */ }
+.               { printf("Unexpected character: %c\n", *yytext); }
 
 %%
