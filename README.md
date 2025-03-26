@@ -4,38 +4,38 @@
 
 ### Datatypes:
 
-| c      | cde            |
-| -      | -              |
-| char   | zeichen        |
-| double | kommazahl      |
-| enum   | aufzählungstyp |
-| float  | gleitkommazahl |
-| int    | ganzzahl       |
-| long   | langeganzzahl  |
-| short  | kurzeganzzahl  |
-| (bool) | wahrheitswert  |
+| c      | cde            | implemented |
+| -      | -              | -           |
+| char   | zeichen        |             |
+| double | kommazahl      |             |
+| enum   | aufzählungstyp |             |
+| float  | gleitkommazahl |             |
+| int    | ganzzahl       | x           |
+| long   | langeganzzahl  |             |
+| short  | kurzeganzzahl  |             |
+| (bool) | wahrheitswert  |             |
 
 ### Often used
 
-| c         | cde           |
-| -         | -             |
-| return    | zurückgeben   |
-| if        | falls         |
-| else      | sonst         |
-| void      | nichts        |
-| break     | abbruch       |
-| const     | konstante     |
-| for       | für           |
-| include   | einbinden     |
-| while     | währrend      |
-| switch    | auswahl       |
-| case      | fall          |
-| default   | standard      |
-| printf    | drucke        |
-| main      | haupt         |
-| (unsigned)| ohnevorzeichen|
-| (signed)  | mitvorzeichen |
-| (static)  | statisch      |
+| c         | cde           | implemented |
+| -         | -             | -           |
+| return    | zurückgeben   | x           |
+| if        | falls         | x           |
+| else      | sonst         | x           |
+| void      | nichts        |             |
+| break     | abbruch       | x           |
+| const     | konstante     | x           |
+| for       | für           |             |
+| include   | einbinden     |             |
+| while     | währrend      | x           |
+| switch    | auswahl       |             |
+| case      | fall          |             |
+| default   | standard      |             |
+| printf    | drucke        |             |
+| main      | haupt         |             |
+| (unsigned)| ohnevorzeichen|             |
+| (signed)  | mitvorzeichen |             |
+| (static)  | statisch      |             |
 
 ### Useless / Backlog
 - auto
