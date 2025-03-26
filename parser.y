@@ -23,7 +23,7 @@ typedef struct {
 
 %token <sval> IDENTIFIER
 %token <ival> NUMBER
-%token IF RETURN INT ELSE BREAK
+%token IF RETURN INT ELSE BREAK CONST
 
 %type <sval> condition statement statements if_statement return_statement
 %type <sval> int_definition else_statement parameter_list parameters
@@ -167,6 +167,18 @@ int_definition:
         free($2);
         free($4);
         free($7);
+    }
+    | CONST INT IDENTIFIER '=' expression ';'
+    {
+        $$ = malloc(strlen("const int \n") + strlen($3) + strlen(" = ") + strlen($5) + 3);
+        sprintf($$, "const int %s = %s;\n", $3, $5);
+        free($3); free($5);
+    }
+    | CONST INT IDENTIFIER ';'
+    {
+        $$ = malloc(strlen("const int \n") + strlen($3) + 2);
+        sprintf($$, "const int %s;\n", $3);
+        free($3);
     }
     ;
 

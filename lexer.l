@@ -13,6 +13,7 @@
 "ganzzahl"      { return INT; }
 "sonst"         { return ELSE; }
 "abbruch"       { return BREAK; }
+"konstante"     { return CONST; }
 
 
 [0-9]+          { yylval.ival = atoi(yytext); return NUMBER; }
