@@ -12,6 +12,7 @@
 "zurückgeben"   { return RETURN; }
 "ganzzahl"      { return INT; }
 "sonst"         { return ELSE; }
+"während"       { return WHILE; }
 
 
 [0-9]+          { yylval.ival = atoi(yytext); return NUMBER; }

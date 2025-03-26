@@ -23,9 +23,9 @@ typedef struct {
 
 %token <sval> IDENTIFIER
 %token <ival> NUMBER
-%token IF RETURN INT ELSE
+%token IF RETURN INT ELSE WHILE
 
-%type <sval> condition statement statements if_statement return_statement
+%type <sval> condition statement statements if_statement return_statement while_statement
 %type <sval> int_definition else_statement parameter_list parameters
 %type <sval> expression argument_list arguments
 
@@ -58,6 +58,8 @@ statement:
     | else_statement
     { $$ = $1; }
     | return_statement
+    { $$ = $1; }
+    | while_statement
     { $$ = $1; }
     | int_definition
     { $$ = $1; }
@@ -134,6 +136,17 @@ return_statement:
         $$ = malloc(strlen("return ") + strlen($2) + 2);
         sprintf($$, "return %s;\n", $2);
         free($2);
+    }
+    ;
+
+while_statement:
+    WHILE '(' condition ')' statement
+    | WHILE '(' condition ')' '{' statements '}'
+    {
+        $$ = malloc(strlen("while (") + strlen($3) + strlen(") {\n") + strlen($6) + strlen("\n}\n") + 1);
+        sprintf($$, "while (%s) {\n%s\n}\n", $3, $6);
+        free($3);
+        free($6);
     }
     ;
 
