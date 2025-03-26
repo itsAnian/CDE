@@ -23,11 +23,11 @@ typedef struct {
 
 %token <sval> IDENTIFIER
 %token <ival> NUMBER
-%token IF RETURN INT ELSE
+%token IF RETURN INT ELSE BREAK
 
 %type <sval> condition statement statements if_statement return_statement
 %type <sval> int_definition else_statement parameter_list parameters
-%type <sval> expression argument_list arguments
+%type <sval> expression argument_list arguments break_statement
 
 %%
 
@@ -60,6 +60,8 @@ statement:
     | return_statement
     { $$ = $1; }
     | int_definition
+    { $$ = $1; }
+    | break_statement
     { $$ = $1; }
     | expression ';'
     { $$ = strdup(";"); }
@@ -134,6 +136,13 @@ return_statement:
         $$ = malloc(strlen("return ") + strlen($2) + 2);
         sprintf($$, "return %s;\n", $2);
         free($2);
+    }
+    ;
+
+break_statement:
+    BREAK ';'
+    {
+        $$ = strdup("break;\n");
     }
     ;
 
