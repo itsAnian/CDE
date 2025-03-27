@@ -24,6 +24,7 @@ int yylex(void);
 %type <sval> condition statement statements if_statement return_statement
 %type <sval> datatype_definition else_statement parameter_list parameters function_declaration
 %type <sval> expression argument_list arguments datatype break_statement for_statement int_for_forloop
+%type <sval> func_params funccall_list function_call
 
 %%
 
@@ -106,6 +107,41 @@ parameters:
         sprintf($$, "%s, %s %s", $1, $3, $4);
         free($1);
         free($4);
+    }
+    ;
+
+funccall_list:
+    /* empty */
+    { $$ = strdup(""); }
+    | func_params
+    { $$ = $1; }
+    ;
+
+func_params:
+    IDENTIFIER
+    {
+        $$ = strdup($1);
+        free($1);
+    }
+    | NUMBER
+    {
+        $$ = malloc(32);
+        sprintf($$, "%d", $1);
+    }
+    | func_params ',' IDENTIFIER
+    {
+        int needed = strlen($1) + strlen($3) + 3;
+        $$ = malloc(needed);
+        snprintf($$, needed, "%s, %s", $1, $3);
+        free($1);
+        free($3);
+    }
+    | func_params ',' NUMBER
+    {
+        int needed = strlen($1) + 32;
+        $$ = malloc(needed);
+        snprintf($$, needed, "%s, %d", $1, $3);
+        free($1);
     }
     ;
 
@@ -220,10 +256,10 @@ datatype_definition:
         sprintf($$, "const %s %s;\n", $2, $3);
         free($3);
     }
-    | datatype IDENTIFIER '=' function_declaration
+    | datatype IDENTIFIER '=' function_call ';'
     {
-        $$ = malloc(strlen($1) + 1 + strlen($2) + 3 + strlen($4));
-        sprintf($$, "%s %s = %s", $1, $2, $4);
+        $$ = malloc(strlen($1) + 1 + strlen($2) + 3 + strlen($4) + 1);
+        sprintf($$, "%s %s = %s;", $1, $2, $4);
         free($1);
         free($2);
         free($4);
@@ -249,6 +285,16 @@ function_declaration:
         free($2);  // Free IDENTIFIER
         free($4);  // Free parameter_list
         free($7);  // Free statements
+    }
+    ;
+
+function_call:
+    IDENTIFIER '(' funccall_list ')'
+    {
+        $$ = malloc(strlen($1) + 1 + strlen($3) + 1);
+        sprintf($$, "%s(%s)", $1, $3);
+        free($1);
+        free($3);
     }
     ;
 
