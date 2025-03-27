@@ -37,7 +37,7 @@
 "<="            { return LE; }
 ">="            { return GE; }
 
-[(){};=]       { return *yytext; }
+[(){};=\+]       { return *yytext; }
 [ \t\r\n]+      { /* Ignore whitespace */ }
 .               { printf("Unexpected character: %c\n", *yytext); }
 

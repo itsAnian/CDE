@@ -22,7 +22,7 @@ int yylex(void);
 %token INC DEC EQ NE LT GT LE GE
 
 %type <sval> condition statement statements if_statement return_statement
-%type <sval> datatype_definition else_statement parameter_list parameters
+%type <sval> datatype_definition else_statement parameter_list parameters function_declaration
 %type <sval> expression argument_list arguments datatype break_statement for_statement int_for_forloop
 
 %%
@@ -60,6 +60,8 @@ statement:
     | break_statement
     { $$ = $1; }
     | for_statement
+    { $$ = $1; }
+    | function_declaration
     { $$ = $1; }
     | expression ';'
     { $$ = strdup(";"); }
@@ -205,15 +207,6 @@ datatype_definition:
         free($1);
         free($2);
     }
-    | datatype IDENTIFIER '(' parameter_list ')' '{' statements '}'
-    {
-        $$ = malloc(strlen($1) + strlen($2) + strlen("(") + strlen($4) + strlen(") {\n") + strlen($7) + strlen("\n}\n") + 1);
-        sprintf($$, "%s %s(%s) {\n%s\n}\n", $1, $2, $4, $7);
-        free($1);
-        free($2);
-        free($4);
-        free($7);
-    }
     | CONST datatype IDENTIFIER '=' expression ';'
     {
         $$ = malloc(7 + strlen($2) + strlen($3) + strlen(" = ") + strlen($5) + 3);
@@ -226,6 +219,36 @@ datatype_definition:
         $$ = malloc(7 + strlen($2) + strlen($3) + 2);
         sprintf($$, "const %s %s;\n", $2, $3);
         free($3);
+    }
+    | datatype IDENTIFIER '=' function_declaration
+    {
+        $$ = malloc(strlen($1) + 1 + strlen($2) + 3 + strlen($4));
+        sprintf($$, "%s %s = %s", $1, $2, $4);
+        free($1);
+        free($2);
+        free($4);
+    }
+    ;
+
+function_declaration:
+    datatype IDENTIFIER '(' parameter_list ')' '{' '}'
+    {
+        int needed = snprintf(NULL, 0, "%s %s(%s) {}\n", $1, $2, $4) + 1;
+        $$ = malloc(needed);
+        snprintf($$, needed, "%s %s(%s) {}\n", $1, $2, $4);
+        free($1);  // Free datatype
+        free($2);  // Free IDENTIFIER
+        free($4);  // Free parameter_list
+    }
+    | datatype IDENTIFIER '(' parameter_list ')' '{' statements '}'
+    {
+        int needed = snprintf(NULL, 0, "%s %s(%s) {\n%s\n}\n", $1, $2, $4, $7) + 1;
+        $$ = malloc(needed);
+        snprintf($$, needed, "%s %s(%s) {\n%s\n}\n", $1, $2, $4, $7);
+        free($1);  // Free datatype
+        free($2);  // Free IDENTIFIER
+        free($4);  // Free parameter_list
+        free($7);  // Free statements
     }
     ;
 
