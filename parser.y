@@ -23,11 +23,12 @@ typedef struct {
 
 %token <sval> IDENTIFIER
 %token <ival> NUMBER
-%token IF RETURN INT ELSE BREAK CONST
+%token IF RETURN INT ELSE BREAK CONST FOR
+%token INC DEC EQ NE LT GT LE GE
 
 %type <sval> condition statement statements if_statement return_statement
 %type <sval> int_definition else_statement parameter_list parameters
-%type <sval> expression argument_list arguments break_statement
+%type <sval> expression argument_list arguments break_statement for_statement int_for_forloop
 
 %%
 
@@ -62,6 +63,8 @@ statement:
     | int_definition
     { $$ = $1; }
     | break_statement
+    { $$ = $1; }
+    | for_statement
     { $$ = $1; }
     | expression ';'
     { $$ = strdup(";"); }
@@ -146,6 +149,36 @@ break_statement:
     }
     ;
 
+for_statement:
+    FOR '(' int_for_forloop ';' condition ';' expression ')' statement
+    {
+        $$ = malloc(strlen("for (") + strlen($3) + strlen("; ") + strlen($5) + strlen("; ") + strlen($7) + strlen(") ") + strlen($9) + 1);
+        sprintf($$, "for (%s; %s; %s) %s", $3, $5, $7, $9);
+        free($3); free($5); free($7); free($9);
+    }
+    | FOR '(' int_for_forloop ';' condition ';' expression ')' '{' statements '}'
+    {
+        $$ = malloc(strlen("for (") + strlen($3) + strlen("; ") + strlen($5) + strlen("; ") + strlen($7) + strlen(") {\n") + strlen($10) + strlen("\n}\n") + 1);
+        sprintf($$, "for (%s; %s; %s) {\n%s\n}\n", $3, $5, $7, $10);
+        free($3); free($5); free($7); free($10);
+    }
+    ;
+
+int_for_forloop:
+    INT IDENTIFIER '=' expression
+    {
+        $$ = malloc(strlen("int ") + strlen($2) + strlen(" = ") + strlen($4) + 1);
+        sprintf($$, "int %s = %s", $2, $4);
+        free($2); free($4);
+    }
+    | INT IDENTIFIER
+    {
+        $$ = malloc(strlen("int ") + strlen($2) + 1);
+        sprintf($$, "int %s", $2);
+        free($2);
+    }
+    ;
+
 int_definition:
     INT IDENTIFIER '=' expression ';'
     {
@@ -211,6 +244,30 @@ expression:
         free($1);
         free($3);
     }
+    | IDENTIFIER INC
+    {
+        $$ = malloc(strlen($1) + 3);
+        sprintf($$, "%s++", $1);
+        free($1);
+    }
+    | IDENTIFIER DEC
+    {
+        $$ = malloc(strlen($1) + 3);
+        sprintf($$, "%s--", $1);
+        free($1);
+    }
+    | INC IDENTIFIER
+    {
+        $$ = malloc(strlen($2) + 3);
+        sprintf($$, "++%s", $2);
+        free($2);
+    }
+    | DEC IDENTIFIER
+    {
+        $$ = malloc(strlen($2) + 3);
+        sprintf($$, "--%s", $2);
+        free($2);
+    }
     ;
 
 condition:
@@ -230,6 +287,42 @@ condition:
         sprintf($$, "%s=%s", $1, $3);
         free($1);
         free($3);
+    }
+    | expression EQ expression
+    {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s == %s", $1, $3);
+        free($1); free($3);
+    }
+    | expression NE expression
+    {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s != %s", $1, $3);
+        free($1); free($3);
+    }
+    | expression LT expression
+    {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s < %s", $1, $3);
+        free($1); free($3);
+    }
+    | expression GT expression
+    {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s > %s", $1, $3);
+        free($1); free($3);
+    }
+    | expression LE expression
+    {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s <= %s", $1, $3);
+        free($1); free($3);
+    }
+    | expression GE expression
+    {
+        $$ = malloc(strlen($1) + strlen($3) + 4);
+        sprintf($$, "%s >= %s", $1, $3);
+        free($1); free($3);
     }
     ;
 

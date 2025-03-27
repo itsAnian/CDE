@@ -14,6 +14,7 @@
 "sonst"         { return ELSE; }
 "abbruch"       { return BREAK; }
 "konstante"     { return CONST; }
+"für"           { return FOR; }
 
 
 [0-9]+          { yylval.ival = atoi(yytext); return NUMBER; }
@@ -23,6 +24,14 @@
 "{"             { return '{'; }
 "}"             { return '}'; }
 ";"             { return ';'; }
+"++"            { return INC; }
+"--"            { return DEC; }
+"=="            { return EQ; }
+"!="            { return NE; }
+"<"             { return LT; }
+">"             { return GT; }
+"<="            { return LE; }
+">="            { return GE; }
 
 "="             { return '='; }
 [ \t\r\n]+      { /* Ignore whitespace */ }
