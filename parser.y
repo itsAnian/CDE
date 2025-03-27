@@ -19,7 +19,7 @@ int yylex(void);
 %token <sval> IDENTIFIER
 %token <ival> NUMBER
 %token IF RETURN INT LONG SHORT ELSE BREAK CONST FOR
-%token INC DEC EQ NE LT GT LE GE
+%token INC DEC EQ NE LT GT LE GE WHILE
 
 %type <sval> condition statement statements if_statement return_statement
 %type <sval> datatype_definition else_statement parameter_list parameters function_declaration
