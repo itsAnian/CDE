@@ -27,7 +27,7 @@
 | const     | konstante     | x           |
 | for       | für           |             |
 | include   | einbinden     |             |
-| while     | währrend      | x           |
+| while     | während       | x           |
 | switch    | auswahl       |             |
 | case      | fall          |             |
 | default   | standard      |             |

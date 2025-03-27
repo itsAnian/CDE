@@ -1,0 +1,24 @@
+ganzzahl zahl = 10;
+konstante ganzzahl grenze = 5;
+kurzezahl klein = 2;
+langezahl gross = 1000;
+
+falls(3 > 1){
+    klein = 1;
+}
+
+ganzzahl funktion(ganzzahl wert) {
+    falls(wert > 3)
+        zurückgeben 27;
+    sonst
+        zurückgeben 7;
+}
+
+langezahl i = 0;
+während(i < 2147483647){
+    i++;
+}
+
+für (ganzzahl j = 0; j < gross; j++) {
+    funktion(wert);
+}

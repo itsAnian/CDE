@@ -67,7 +67,11 @@ statement:
     | function_declaration
     { $$ = $1; }
     | expression ';'
-    { $$ = strdup(";"); }
+    { 
+        $$ = malloc(strlen($1) + 1);
+        sprintf($$, "%s;", $1);
+        free($1);
+    }
     ;
 
 argument_list:
@@ -149,21 +153,34 @@ func_params:
 
 if_statement:
     IF '(' condition ')' statement
+    {
+        int needed = strlen("if (") + strlen($3) + strlen(") ") + strlen($5) + 1;
+        $$ = malloc(needed);
+        snprintf($$, needed, "if (%s) %s", $3, $5);
+        free($3); free($5);
+    }
     | IF '(' condition ')' '{' statements '}'
     {
-        $$ = malloc(strlen("if (") + strlen($3) + strlen(") {\n") + strlen($6) + strlen("\n}\n") + 1);
-        sprintf($$, "if (%s) {\n%s\n}\n", $3, $6);
-        free($3);
-        free($6);
+        int needed = strlen("if (") + strlen($3) + strlen(") {\n") + strlen($6) + strlen("\n}\n") + 1;
+        $$ = malloc(needed);
+        snprintf($$, needed, "if (%s) {\n%s\n}\n", $3, $6);
+        free($3); free($6);
     }
     ;
 
 else_statement:
     ELSE statement
+    {
+        int needed = strlen("else ") + strlen($2) + 1;
+        $$ = malloc(needed);
+        snprintf($$, needed, "else %s", $2);
+        free($2);
+    }
     | ELSE '{' statements '}'
     {
-        $$ = malloc(strlen("else {\n") + strlen($3) + strlen("\n}\n") + 1);
-        sprintf($$, "else {\n%s\n}\n", $3);
+        int needed = strlen("else {\n") + strlen($3) + strlen("\n}\n") + 1;
+        $$ = malloc(needed);
+        snprintf($$, needed, "else {\n%s\n}\n", $3);
         free($3);
     }
     ;
@@ -179,10 +196,18 @@ return_statement:
 
 while_statement:
     WHILE '(' condition ')' statement
+    {
+        int needed = strlen("while (") + strlen($3) + strlen(") ") + strlen($5) + 1;
+        $$ = malloc(needed);
+        snprintf($$, needed, "while (%s) %s", $3, $5);
+        free($3);
+        free($5);
+    }
     | WHILE '(' condition ')' '{' statements '}'
     {
-        $$ = malloc(strlen("while (") + strlen($3) + strlen(") {\n") + strlen($6) + strlen("\n}\n") + 1);
-        sprintf($$, "while (%s) {\n%s\n}\n", $3, $6);
+        int needed = strlen("while (") + strlen($3) + strlen(") {\n") + strlen($6) + strlen("\n}\n") + 1;
+        $$ = malloc(needed);
+        snprintf($$, needed, "while (%s) {\n%s\n}\n", $3, $6);
         free($3);
         free($6);
     }
