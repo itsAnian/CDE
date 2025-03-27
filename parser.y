@@ -214,23 +214,27 @@ datatype_definition:
         free($4);
         free($7);
     }
-    | CONST INT IDENTIFIER '=' expression ';'
+    | CONST datatype IDENTIFIER '=' expression ';'
     {
-        $$ = malloc(strlen("const int \n") + strlen($3) + strlen(" = ") + strlen($5) + 3);
-        sprintf($$, "const int %s = %s;\n", $3, $5);
-        free($3); free($5);
+        $$ = malloc(7 + strlen($2) + strlen($3) + strlen(" = ") + strlen($5) + 3);
+        sprintf($$, "const %s %s = %s;\n", $2, $3, $5);
+        free($3); 
+        free($5);
     }
-    | CONST INT IDENTIFIER ';'
+    | CONST datatype IDENTIFIER ';'
     {
-        $$ = malloc(strlen("const int \n") + strlen($3) + 2);
-        sprintf($$, "const int %s;\n", $3);
+        $$ = malloc(7 + strlen($2) + strlen($3) + 2);
+        sprintf($$, "const %s %s;\n", $2, $3);
         free($3);
     }
     ;
 
 expression:
     IDENTIFIER
-    { $$ = strdup($1); free($1); }
+    { 
+        $$ = strdup($1); 
+        free($1); 
+    }
     | NUMBER
     {
         $$ = malloc(32);
