@@ -17,6 +17,7 @@
 "abbruch"       { return BREAK; }
 "konstante"     { return CONST; }
 "für"           { return FOR; }
+"während"       { return WHILE; }
 
 [0-9]+ { 
     yylval.ival = atoi(yytext); 

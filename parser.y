@@ -24,7 +24,7 @@ int yylex(void);
 %type <sval> condition statement statements if_statement return_statement
 %type <sval> datatype_definition else_statement parameter_list parameters function_declaration
 %type <sval> expression argument_list arguments datatype break_statement for_statement int_for_forloop
-%type <sval> func_params funccall_list function_call
+%type <sval> func_params funccall_list function_call while_statement
 
 %%
 
@@ -61,6 +61,8 @@ statement:
     | break_statement
     { $$ = $1; }
     | for_statement
+    { $$ = $1; }
+    | while_statement
     { $$ = $1; }
     | function_declaration
     { $$ = $1; }
@@ -172,6 +174,17 @@ return_statement:
         $$ = malloc(strlen("return ") + strlen($2) + 2);
         sprintf($$, "return %s;\n", $2);
         free($2);
+    }
+    ;
+
+while_statement:
+    WHILE '(' condition ')' statement
+    | WHILE '(' condition ')' '{' statements '}'
+    {
+        $$ = malloc(strlen("while (") + strlen($3) + strlen(") {\n") + strlen($6) + strlen("\n}\n") + 1);
+        sprintf($$, "while (%s) {\n%s\n}\n", $3, $6);
+        free($3);
+        free($6);
     }
     ;
 
