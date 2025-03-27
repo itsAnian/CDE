@@ -14,6 +14,9 @@
 "langezahl"     { return LONG; }
 "kurzezahl"     { return SHORT; }
 "sonst"         { return ELSE; }
+"abbruch"       { return BREAK; }
+"konstante"     { return CONST; }
+"für"           { return FOR; }
 
 [0-9]+ { 
     yylval.ival = atoi(yytext); 
@@ -24,6 +27,15 @@
     yylval.sval = strdup(yytext); 
     return IDENTIFIER; 
 }
+
+"++"            { return INC; }
+"--"            { return DEC; }
+"=="            { return EQ; }
+"!="            { return NE; }
+"<"             { return LT; }
+">"             { return GT; }
+"<="            { return LE; }
+">="            { return GE; }
 
 [(){};=]       { return *yytext; }
 [ \t\r\n]+      { /* Ignore whitespace */ }
