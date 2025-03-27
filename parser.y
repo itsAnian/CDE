@@ -6,19 +6,14 @@
 #include <string.h>
 
 void yyerror(const char *s);
-int yylex();
-
-typedef struct {
-    char* sval;
-    int ival;
-} YYSTYPE;
-
-#define YYSTYPE_IS_DECLARED 1
+int yylex(void);
 %}
 
-%union {
-    char* sval;
-    int ival;
+%define api.value.type { 
+    struct { 
+        char* sval; 
+        int ival; 
+    } 
 }
 
 %token <sval> IDENTIFIER
@@ -26,7 +21,7 @@ typedef struct {
 %token IF RETURN INT ELSE
 
 %type <sval> condition statement statements if_statement return_statement
-%type <sval> int_definition else_statement parameter_list parameters
+%type <sval> datatype_definition else_statement parameter_list parameters
 %type <sval> expression argument_list arguments
 
 %%
@@ -59,7 +54,7 @@ statement:
     { $$ = $1; }
     | return_statement
     { $$ = $1; }
-    | int_definition
+    | datatype_definition
     { $$ = $1; }
     | expression ';'
     { $$ = strdup(";"); }
@@ -137,7 +132,7 @@ return_statement:
     }
     ;
 
-int_definition:
+datatype_definition:
     INT IDENTIFIER '=' expression ';'
     {
         $$ = malloc(strlen("int ") + strlen($2) + strlen(" = ") + strlen($4) + 3);
@@ -166,7 +161,11 @@ expression:
     { $$ = strdup($1); free($1); }
     | NUMBER
     {
-        $$ = malloc(16);
+        printf("PARSER SIDE:\n");
+        printf("  yylval address: %p\n", (void*)&yylval);
+        printf("  ival address:   %p\n", (void*)&(yylval.ival));
+        printf("  Received value: %d\n\n", $1);
+        $$ = malloc(32);
         sprintf($$, "%d", $1);
     }
     | expression '+' expression
