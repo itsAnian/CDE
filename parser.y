@@ -161,10 +161,6 @@ expression:
     { $$ = strdup($1); free($1); }
     | NUMBER
     {
-        printf("PARSER SIDE:\n");
-        printf("  yylval address: %p\n", (void*)&yylval);
-        printf("  ival address:   %p\n", (void*)&(yylval.ival));
-        printf("  Received value: %d\n\n", $1);
         $$ = malloc(32);
         sprintf($$, "%d", $1);
     }

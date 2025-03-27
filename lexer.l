@@ -4,7 +4,6 @@
 #include "parser.h"
 #include <stdlib.h>
 #include <string.h>
-#include <assert.h>  // Required for static_assert in C11
 %}
 
 %%
@@ -16,10 +15,6 @@
 
 [0-9]+ { 
     yylval.ival = atoi(yytext); 
-    printf("LEXER SIDE:\n");
-    printf("  yylval address: %p\n", (void*)&yylval);
-    printf("  ival address:   %p\n", (void*)&(yylval.ival));
-    printf("  Stored value:   %d\n\n", yylval.ival);
     return NUMBER; 
 }
 
