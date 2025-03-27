@@ -18,11 +18,11 @@ int yylex(void);
 
 %token <sval> IDENTIFIER
 %token <ival> NUMBER
-%token IF RETURN INT ELSE
+%token IF RETURN INT LONG SHORT ELSE
 
 %type <sval> condition statement statements if_statement return_statement
 %type <sval> datatype_definition else_statement parameter_list parameters
-%type <sval> expression argument_list arguments
+%type <sval> expression argument_list arguments datatype
 
 %%
 
@@ -87,16 +87,16 @@ parameter_list:
     ;
 
 parameters:
-    INT IDENTIFIER
+    datatype IDENTIFIER
     {
-        $$ = malloc(strlen("int ") + strlen($2) + 1);
-        sprintf($$, "int %s", $2);
+        $$ = malloc(strlen($1) + strlen($2) + 1);
+        sprintf($$, "%s %s", $1, $2);
         free($2);
     }
-    | parameters ',' INT IDENTIFIER
+    | parameters ',' datatype IDENTIFIER
     {
-        $$ = malloc(strlen($1) + strlen(" int ") + strlen($4) + 3);
-        sprintf($$, "%s, int %s", $1, $4);
+        $$ = malloc(strlen($1) + strlen($3) + strlen($4) + 3);
+        sprintf($$, "%s, %s %s", $1, $3, $4);
         free($1);
         free($4);
     }
@@ -132,24 +132,42 @@ return_statement:
     }
     ;
 
-datatype_definition:
-    INT IDENTIFIER '=' expression ';'
+datatype:
+    INT
     {
-        $$ = malloc(strlen("int ") + strlen($2) + strlen(" = ") + strlen($4) + 3);
-        sprintf($$, "int %s = %s;\n", $2, $4);
+        $$ = strdup("int");
+    }
+    | LONG
+    {
+        $$ = strdup("long");
+    }
+    | SHORT
+    {
+        $$ = strdup("short");
+    }
+    ;
+
+datatype_definition:
+    datatype IDENTIFIER '=' expression ';'
+    {
+        $$ = malloc(strlen($1) + strlen($2) + strlen(" = ") + strlen($4) + 3);
+        sprintf($$, "%s %s = %s;\n", $1, $2, $4);
+        free($1);
         free($2);
         free($4);
     }
-    | INT IDENTIFIER ';'
+    | datatype IDENTIFIER ';'
     {
-        $$ = malloc(strlen("int ") + strlen($2) + 2);
-        sprintf($$, "int %s;\n", $2);
+        $$ = malloc(strlen($1) + strlen($2) + 2);
+        sprintf($$, "%s %s;\n", $1, $2);
+        free($1);
         free($2);
     }
-    | INT IDENTIFIER '(' parameter_list ')' '{' statements '}'
+    | datatype IDENTIFIER '(' parameter_list ')' '{' statements '}'
     {
-        $$ = malloc(strlen("int ") + strlen($2) + strlen("(") + strlen($4) + strlen(") {\n") + strlen($7) + strlen("\n}\n") + 1);
-        sprintf($$, "int %s(%s) {\n%s\n}\n", $2, $4, $7);
+        $$ = malloc(strlen($1) + strlen($2) + strlen("(") + strlen($4) + strlen(") {\n") + strlen($7) + strlen("\n}\n") + 1);
+        sprintf($$, "%s %s(%s) {\n%s\n}\n", $1, $2, $4, $7);
+        free($1);
         free($2);
         free($4);
         free($7);

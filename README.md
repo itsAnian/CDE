@@ -11,8 +11,8 @@
 | enum   | aufzählungstyp |             |
 | float  | gleitkommazahl |             |
 | int    | ganzzahl       | x           |
-| long   | langeganzzahl  |             |
-| short  | kurzeganzzahl  |             |
+| long   | langezahl      | x           |
+| short  | kurzezahl      | x           |
 | (bool) | wahrheitswert  |             |
 
 ### Often used

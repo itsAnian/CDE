@@ -11,6 +11,8 @@
 "falls"         { return IF; }
 "zurückgeben"   { return RETURN; }
 "ganzzahl"      { return INT; }
+"langezahl"     { return LONG; }
+"kurzezahl"     { return SHORT; }
 "sonst"         { return ELSE; }
 
 [0-9]+ { 
