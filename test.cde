@@ -1,3 +1,11 @@
+ganzzahl funktion(ganzzahl wert) {
+    falls(wert > 3)
+        zurückgeben 27;
+    sonst
+        zurückgeben 7;
+}
+
+ganzzahl main(){
 ganzzahl zahl = 10;
 konstante ganzzahl grenze = 5;
 kurzezahl klein = 2;
@@ -7,12 +15,6 @@ falls(3 > 1){
     klein = 1;
 }
 
-ganzzahl funktion(ganzzahl wert) {
-    falls(wert > 3)
-        zurückgeben 27;
-    sonst
-        zurückgeben 7;
-}
 
 langezahl i = 0;
 während(i < 2147483647){
@@ -20,5 +22,6 @@ während(i < 2147483647){
 }
 
 für (ganzzahl j = 0; j < gross; j++) {
-    funktion(wert);
+    funktion(j);
+}
 }
